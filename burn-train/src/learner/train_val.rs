@@ -1,5 +1,5 @@
 use crate::components::LearnerComponents;
-use crate::metric::processor::EventProcessor;
+use crate::metric::processor::{Event, EventProcessor};
 use crate::{Learner, TrainEpoch, ValidEpoch};
 use burn_core::data::dataloader::DataLoader;
 use burn_core::module::{AutodiffModule, Module};
@@ -139,6 +139,8 @@ impl<LC: LearnerComponents> Learner<LC> {
                         checkpoint,
                     );
                 }
+                self.event_processor.process_train(Event::EndEpoch(checkpoint));
+                self.event_processor.process_valid(Event::EndEpoch(checkpoint));
                 checkpoint + 1
             }
             None => 1,
